@@ -12,14 +12,14 @@ public abstract class Tile {
 
     protected final int tileCoordinate;
 
-    private static final Map<Integer, EmptyTile> EMPTY_TILES = createAllPossibleEmptyTiles();
+    private static final Map<Integer, EmptyTile> EMPTY_TILES_CACHE = createAllPossibleEmptyTiles();//Creates hashmap of board
 
-    private static Map<Integer, EmptyTile> createAllPossibleEmptyTiles(){
+    private static Map<Integer, EmptyTile> createAllPossibleEmptyTiles(){ //Method to generate hashmap
 
-        final Map<Integer,EmptyTile> emptyTileMap= new HashMap<>();
+        final Map<Integer,EmptyTile> emptyTileMap= new HashMap<>(); //HashMap declaration with integer key and tile value
 
         for(int i=0;i<64;i++){
-            emptyTileMap.put(i, new EmptyTile(i));
+            emptyTileMap.put(i, new EmptyTile(i)); //Loops to fill HashMap with empty tiles and keys 0 to 63
         }
 
         return ImmutableMap.copyOf(emptyTileMap);//ImmutableMap part of external Guava library
@@ -27,7 +27,7 @@ public abstract class Tile {
     //Only method which allows creation of tiles. Accesses constructor to create occupied tile if piece
     // is null. Otherwise returns the existing empty tile.
     public static Tile createTile(final int tileCoordinate, Piece piece){
-        return piece != null ? new OccupiedTile(tileCoordinate,piece) : EMPTY_TILES.get(tileCoordinate);
+        return piece != null ? new OccupiedTile(tileCoordinate,piece) : EMPTY_TILES_CACHE.get(tileCoordinate);
     }
 
    //Constructor (set to private for immutability)
@@ -46,7 +46,7 @@ public abstract class Tile {
     public static final class EmptyTile extends Tile {
 
         //Subclass constructor
-        EmptyTile(final int tileCoordinate) {
+        private EmptyTile(final int tileCoordinate) {
             super(tileCoordinate);
         }
 
@@ -66,7 +66,7 @@ public abstract class Tile {
         private final Piece pieceOnTile;
 
         //Subclass constructor
-        OccupiedTile(int tileCoordinate,  Piece pieceOnTile) {
+        private OccupiedTile(int tileCoordinate,  Piece pieceOnTile) {
             super(tileCoordinate);
             this.pieceOnTile=pieceOnTile;
         }
